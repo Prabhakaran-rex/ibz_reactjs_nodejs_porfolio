@@ -15,7 +15,7 @@ var ProjectAll = React.createClass({
       dataType: 'json',  
       ContentType: 'application/json',  
       success: function(data) {           
-        this.setState({data1: data});   
+        this.setState({data1: data}); 
 
       }.bind(this),  
       error: function(jqXHR) {  
@@ -36,10 +36,12 @@ var ProjectAll = React.createClass({
       data: projectDelete,  
       success: function(data) {  
         alert(data.data);  
-        this.componentDidMount();  
+        this.componentDidMount();
+        toastr.success("Project detail successfully.");
 
       }.bind(this),  
       error: function(xhr, status, err) {  
+        toastr.success(err);
         alert(err);   
 
 
@@ -80,14 +82,15 @@ var ProjectAll = React.createClass({
       data: projectdata,  
       success: function(data) {         
         console.log(data.data);     
-        //this.setState(this.getInitialState());
-        //this.componentDidMount();
-        location.assign('/');
-
-      },  
-      error: function(xhr, status, err) {  
+        this.setState(this.getInitialState());
+        this.componentDidMount();
+        var msg = Url == "/api/savedata" ? "save" : "update"
+        toastr.success("Project detail "+msg+" successfully..");
+      }.bind(this),  
+      error: function(xhr, status, err) {
+        toastr.error(err)
         console.log(err);       
-      }
+      }.bind(this)
     });  
   },  
   
