@@ -1,9 +1,10 @@
 var ProjectAll = React.createClass({   
 
   getInitialState: function () {  
-    return { name: '' ,description: '',skill:'',client:'',category:'',image:'',Buttontxt:'Save', data1: []};  
+    return { name: '' ,description: '',skill:'',client:'',category:'',image:'',Buttontxt:'Save', projects: [],categories: []};  
   },  
   handleChange: function(e) {  
+    console.log(e.target.name)
     this.setState({[e.target.name]: e.target.value});  
   },  
   
@@ -15,7 +16,23 @@ var ProjectAll = React.createClass({
       dataType: 'json',  
       ContentType: 'application/json',  
       success: function(data) {           
-        this.setState({data1: data}); 
+        console.log(data)
+        this.setState({projects: data.projects});
+
+      }.bind(this),  
+      error: function(jqXHR) {  
+        console.log(jqXHR);  
+
+      }.bind(this)  
+    }); 
+    $.ajax({  
+      url: "api/categories",  
+      type: "GET",  
+      dataType: 'json',  
+      ContentType: 'application/json',  
+      success: function(data) {           
+        console.log(data)
+        this.setState({categories: data.categories});
 
       }.bind(this),  
       error: function(jqXHR) {  
@@ -53,6 +70,7 @@ var ProjectAll = React.createClass({
   
   EditData(item){    
     console.log("edit form........");
+    // $('.category_select').val(item.category)
     this.setState({name: item.name,description:item.description,skill:item.skill,client:item.client,category: item.category,id:item._id,Buttontxt:'Update'});  
   },  
   
@@ -86,6 +104,9 @@ var ProjectAll = React.createClass({
         this.componentDidMount();
         var msg = Url == "/api/savedata" ? "save" : "update"
         toastr.success("Project detail "+msg+" successfully..");
+        // setTimeout(function() {
+        //   location.assign('/');
+        // }, 600);
       }.bind(this),  
       error: function(xhr, status, err) {
         toastr.error(err)
@@ -100,7 +121,7 @@ var ProjectAll = React.createClass({
         <p className="text-center" style={{fontSize:'25px'}}><b> IBZ Projects Using React,Nodejs,Express,MongoDB</b></p>  
         <form>  
           <div className="col-sm-12 col-md-12">   
-            <table className="table table-bordered">  
+            <table className="table table-bordered form_project">  
               <tbody>  
                 <tr>  
                   <td><b>Name</b></td>  
@@ -130,7 +151,12 @@ var ProjectAll = React.createClass({
                 <tr>  
                   <td><b>Category</b></td>  
                   <td>  
-                  <input type="text"  className="form-control" value={this.state.category}  name="category" onChange={ this.handleChange } required />  
+                    <select className="form-control category_select" name="category" onChange={ this.handleChange } value={this.state.category} required >
+                      <option>Select Option</option>
+                      {this.state.categories.map((item, index) => (
+                        <option key={index} value={item.name}>{item.name}</option>
+                       ))}
+                    </select>
                   </td>
                 </tr>  
                 <tr>  
@@ -157,7 +183,7 @@ var ProjectAll = React.createClass({
                 <th><b>Edit</b></th>
                 <th><b>Delete</b></th>
               </tr>  
-              {this.state.data1.map((item, index) => (  
+              {this.state.projects.map((item, index) => (  
                 <tr key={index}>  
                   <td>{index+1}</td>   
                   <td>{item.name}</td>                        
